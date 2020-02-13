@@ -1,0 +1,12 @@
+{
+  "name": "talk-type-safe-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:etienne-dldc/talk-type-safe-api.git",
+  "author": "Etienne Dldc <e.deladonchamps@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "setup": "cp ./config/slides.settings.json ./.vscode/settings.json",
+    "unsetup": "cp ./config/base.settings.json ./.vscode/settings.json"
+  }
+}

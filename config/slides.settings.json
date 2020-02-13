@@ -1,0 +1,24 @@
+{
+  "workbench.colorTheme": "GitHub Clean White",
+  "workbench.colorCustomizations": {
+    "editorCursor.background": "#ffffff",
+    "editorCursor.foreground": "#0000bb",
+    "editor.lineHighlightBackground": "#f0f0f0",
+    "editor.selectionBackground": "#aaeeff"
+  },
+  "workbench.statusBar.visible": false,
+  "workbench.activityBar.visible": false,
+  "editor.minimap.enabled": false,
+  "editor.renderWhitespace": "none",
+  "editor.renderIndentGuides": false,
+  "editor.fontFamily": "Fira Code",
+  "terminal.integrated.fontFamily": "Fira Code",
+  "editor.fontWeight": "600",
+  "editor.fontSize": 24,
+  "terminal.integrated.fontWeight": "800",
+  "terminal.integrated.fontSize": 28,
+  "editor.formatOnSave": false,
+  "breadcrumbs.enabled": false,
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.limit.value": 1000
+}
