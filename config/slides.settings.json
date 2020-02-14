@@ -1,4 +1,9 @@
 {
+
+  "mdx-preview.preview.useWhiteBackground": true,
+  "mdx-preview.preview.mdx.customLayoutFilePath": "/Users/etienne/Workspace/github.com/etienne-dldc/talk-type-safe-api/src/Layout.tsx",
+  "mdx-preview.build.useSucraseTranspiler": false,
+
   "workbench.colorTheme": "GitHub Clean White",
   "workbench.colorCustomizations": {
     "editorCursor.background": "#ffffff",
@@ -8,17 +13,101 @@
   },
   "workbench.statusBar.visible": false,
   "workbench.activityBar.visible": false,
+
   "editor.minimap.enabled": false,
   "editor.renderWhitespace": "none",
   "editor.renderIndentGuides": false,
+  "editor.fontSize": 30,
   "editor.fontFamily": "Fira Code",
+  "editor.lineNumbers": "off",
+  "editor.lineHeight": 50,
+  "editor.formatOnSave": true,
+  "editor.cursorBlinking": "solid",
+  "editor.parameterHints.enabled": false,
+  "editor.quickSuggestions": false,
+  "editor.suggestOnTriggerCharacters": false,
+
   "terminal.integrated.fontFamily": "Fira Code",
-  "editor.fontWeight": "600",
-  "editor.fontSize": 24,
-  "terminal.integrated.fontWeight": "800",
-  "terminal.integrated.fontSize": 28,
-  "editor.formatOnSave": false,
-  "breadcrumbs.enabled": false,
+  "terminal.integrated.fontSize": 26,
+  "breadcrumbs.enabled": true,
   "workbench.editor.enablePreview": false,
-  "workbench.editor.limit.value": 1000
+  "workbench.editor.limit.value": 1000,
+  "scm.diffDecorations": "none",
+  "workbench.editor.showTabs": false,
+  "window.zoomLevel": -1,
+  "breadcrumbs.filePath": "off",
+  "breadcrumbs.symbolPath": "off",
+
+  "editor.tokenColorCustomizations": {
+    "[GitHub Clean White]": {
+      "textMateRules": [
+        {
+          "scope": "heading.1.markdown",
+          "settings": {
+            "foreground": "#1565C0"
+          }
+        },
+        {
+          "scope": "heading.2.markdown",
+          "settings": {
+            "foreground": "#FB8C00"
+          }
+        },
+        {
+          "scope": "markup.bold.markdown",
+          "settings": {
+            "fontStyle": "bold"
+          }
+        },
+        {
+          "scope": "text.html.markdown",
+          "settings": {
+            "foreground": "#263238"
+          }
+        },
+        {
+          "scope": "string.other.link.title.markdown",
+          "settings": {
+            "foreground": "#3F51B5"
+          }
+        },
+        {
+          "scope": "markup.underline.link.markdown",
+          "settings": {
+            "foreground": "#1A237E"
+          }
+        },
+        {
+          "scope": "meta.link.inline.markdown",
+          "settings": {
+            "foreground": "#CFD8DC"
+          }
+        },
+        {
+          "scope": "markup.quote.markdown",
+          "settings": {
+            "fontStyle": "italic"
+          }
+        },
+        {
+          "scope": "punctuation.definition.quote.begin.markdown",
+          "settings": {
+            "foreground": "#CFD8DC"
+          }
+        },
+        {
+          "scope": "support.class.console.tsx",
+          "settings": {
+            "fontStyle": ""
+          }
+        },
+        {
+          "scope": "support.function.console.tsx",
+          "settings": {
+            "fontStyle": ""
+          }
+        }
+      ]
+    }
+  }
 }

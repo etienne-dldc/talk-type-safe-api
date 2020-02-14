@@ -1,1 +1,5 @@
-{}
+{
+  "mdx-preview.preview.useWhiteBackground": true,
+  "mdx-preview.preview.mdx.customLayoutFilePath": "/Users/etienne/Workspace/github.com/etienne-dldc/talk-type-safe-api/src/Layout.tsx",
+  "mdx-preview.build.useSucraseTranspiler": false
+}

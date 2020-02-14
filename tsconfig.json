@@ -3,6 +3,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "strict": true,
+    "jsx": "react",
     "noImplicitAny": true,
     "noImplicitThis": true,
     "noUnusedLocals": true,
@@ -11,5 +12,6 @@
     "baseUrl": "./slides",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
-  }
+  },
+  "include": ["src", "slides", "types"]
 }

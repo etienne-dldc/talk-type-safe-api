@@ -1,0 +1,65 @@
+html,
+body {
+  margin: 0;
+  font-family: "Fira Code";
+  background: white;
+  line-height: 1.5;
+  font-size: 20px;
+  letter-spacing: -0.05rem;
+}
+
+body {
+  padding: 20px 40px;
+}
+
+h1 {
+  color: #1565c0;
+  font-weight: normal;
+}
+
+h1 span {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+h2 {
+  color: #fb8c00;
+  font-weight: normal;
+}
+
+h2 span {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+p {
+  margin: 0;
+  margin-top: 1.5rem;
+}
+
+blockquote {
+  background: none;
+  font-style: italic;
+  position: relative;
+  margin: 0;
+  margin-left: 30px;
+  padding: 1px;
+}
+
+blockquote .arrows {
+  position: absolute;
+  top: 1.5rem;
+  left: -30px;
+  color: #cfd8dc;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.nav {
+  color: #cfd8dc;
+  cursor: pointer;
+}
+
+.nav:hover {
+  color: #1565c0;
+}
