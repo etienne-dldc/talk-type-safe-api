@@ -1,7 +1,8 @@
-import React from "react";
-import _01 from "../slides/01.mdx";
-import _02 from "../slides/02.mdx";
-import Layout from "./Layout";
+import React from 'react';
+import _01 from '../slides/01.mdx';
+import _02 from '../slides/02.mdx';
+import Layout from './Layout';
+import { StepCtx } from './Appear';
 
 const SLIDES = [
   _01,
@@ -21,14 +22,22 @@ const SLIDES = [
 
 const Slides = () => {
   const [menu, setMenu] = React.useState(false);
-  const [current, setCurrent] = React.useState(0);
+  const [current, setCurrent] = React.useState<[number, number]>([0, 0]);
 
   const nextSlide = React.useCallback(() => {
-    setCurrent(v => (v + 1) % SLIDES.length);
+    setCurrent(([slide]) => [(slide + 1) % SLIDES.length, 0]);
   }, []);
 
   const prevSlide = React.useCallback(() => {
-    setCurrent(v => (v + SLIDES.length - 1) % SLIDES.length);
+    setCurrent(([slide]) => [(slide + SLIDES.length - 1) % SLIDES.length, 0]);
+  }, []);
+
+  const prevStep = React.useCallback(() => {
+    setCurrent(([slide, step]) => [slide, Math.max(0, step - 1)]);
+  }, []);
+
+  const nextStep = React.useCallback(() => {
+    setCurrent(([slide, step]) => [slide, step + 1]);
   }, []);
 
   React.useEffect(() => {
@@ -36,28 +45,47 @@ const Slides = () => {
       return;
     }
     const onKeydown = (e: KeyboardEvent) => {
-      if (e.code === "ArrowLeft") {
+      if (e.code === 'ArrowLeft') {
         prevSlide();
+        e.preventDefault();
       }
-      if (e.code === "ArrowRight") {
+      if (e.code === 'ArrowRight') {
         nextSlide();
+        e.preventDefault();
+      }
+      if (e.code === 'ArrowDown') {
+        nextStep();
+        e.preventDefault();
+      }
+      if (e.code === 'ArrowUp') {
+        prevStep();
+        e.preventDefault();
       }
     };
-    window.addEventListener("keydown", onKeydown);
+    window.addEventListener('keydown', onKeydown);
     return () => {
-      window.removeEventListener("keydown", onKeydown);
+      window.removeEventListener('keydown', onKeydown);
     };
-  }, [prevSlide, nextSlide, menu]);
+  }, [prevSlide, nextSlide, nextStep, prevStep, menu]);
 
   if (menu) {
     return (
       <Layout>
+        <span
+          className="back"
+          onClick={() => {
+            setMenu(false);
+          }}
+        >
+          {'<- back'}
+        </span>
+        <br />
         {SLIDES.map((_, i) => (
-          <React.Fragment>
+          <React.Fragment key={i}>
             <span
               className="nav"
               onClick={() => {
-                setCurrent(i);
+                setCurrent([i, 0]);
                 setMenu(false);
               }}
             >
@@ -70,18 +98,22 @@ const Slides = () => {
     );
   }
 
+  const [slide, step] = current;
+
   return (
     <div>
-      <p onClick={() => setMenu(true)} className="nav">{`// ${padLeft(
-        current
-      )}.mdx`}</p>
-      <Layout>{React.createElement(SLIDES[current])}</Layout>
+      <StepCtx.Provider value={step}>
+        <p onClick={() => setMenu(true)} className="nav">{`// ${padLeft(
+          slide
+        )}-${step}.mdx`}</p>
+        <Layout>{React.createElement(SLIDES[slide])}</Layout>
+      </StepCtx.Provider>
     </div>
   );
 };
 
 function padLeft(num: number): string {
-  return (num < 10 ? "00" : num < 100 ? "0" : "") + num.toFixed(0);
+  return (num < 10 ? '00' : num < 100 ? '0' : '') + num.toFixed(0);
 }
 
 export default Slides;

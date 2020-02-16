@@ -1,18 +1,23 @@
 html,
 body {
   margin: 0;
-  font-family: "Fira Code";
+  font-family: 'Fira Code';
   background: white;
+  color: #263238;
   line-height: 1.5;
-  font-size: 20px;
+  font-size: 40px;
   letter-spacing: -0.05rem;
+  font-feature-settings: 'calt';
 }
 
 body {
   padding: 20px 40px;
+  margin: 0 auto;
+  max-width: 30rem;
 }
 
 h1 {
+  font-size: 1.5rem;
   color: #1565c0;
   font-weight: normal;
 }
@@ -23,6 +28,7 @@ h1 span {
 }
 
 h2 {
+  font-size: 1.5rem;
   color: #fb8c00;
   font-weight: normal;
 }
@@ -62,4 +68,23 @@ blockquote .arrows {
 
 .nav:hover {
   color: #1565c0;
+}
+
+.back {
+  color: #fb8c00;
+  cursor: pointer;
+}
+
+.back:hover {
+  color: #e65100;
+}
+
+ul {
+  margin: 0;
+  list-style: none;
+  padding: 0;
+}
+
+li .dash {
+  color: #cfd8dc;
 }
