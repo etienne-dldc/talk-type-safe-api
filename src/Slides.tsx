@@ -1,43 +1,98 @@
 import React from 'react';
-import _01 from '../slides/01.mdx';
-import _02 from '../slides/02.mdx';
+import * as _01 from '../slides/01.mdx';
+import * as _02 from '../slides/02.mdx';
+import * as _03 from '../slides/03.mdx';
 import Layout from './Layout';
-import { StepCtx } from './Appear';
+import { StepCtx, ScrollCtx } from './Appear';
+import { useSpring, config } from 'react-spring';
 
-const SLIDES = [
-  _01,
-  _02,
-  _02,
-  _02,
-  _02,
-  _02,
-  _02,
-  _02,
-  _02,
-  _02,
-  _02,
-  _02,
-  _02
-];
+const SLIDES = [_01, _02, _03];
 
-const Slides = () => {
+const LAST_SLIDE = SLIDES.length - 1;
+
+interface Config {
+  steps: number;
+}
+
+function getConfig(slideIndex: number): Config {
+  const currentSlide = SLIDES[slideIndex];
+  const currentConfig: Config = (currentSlide as any).config || { steps: 0 };
+  return currentConfig;
+}
+
+interface Props {
+  header?: string;
+}
+
+const Slides: React.FC<Props> = ({ header = '' }) => {
+  const [, setYInternal] = useSpring<{ y: number }>(() => ({
+    immediate: false,
+    y: 0,
+    onFrame: (props: any) => {
+      window.scroll(0, props.y);
+    },
+    config: config.default
+  }));
+
   const [menu, setMenu] = React.useState(false);
   const [current, setCurrent] = React.useState<[number, number]>([0, 0]);
 
-  const nextSlide = React.useCallback(() => {
-    setCurrent(([slide]) => [(slide + 1) % SLIDES.length, 0]);
+  const [slide, step] = current;
+
+  const setYRef = React.useRef(setYInternal);
+  setYRef.current = setYInternal;
+
+  const setY = React.useCallback((val: number) => {
+    setYRef.current({
+      y: val,
+      reset: true,
+      from: { y: window.scrollY }
+    });
   }, []);
 
+  React.useEffect(() => {
+    setY(0);
+  }, [slide, setY]);
+
+  const currentSlide = SLIDES[slide];
+
   const prevSlide = React.useCallback(() => {
-    setCurrent(([slide]) => [(slide + SLIDES.length - 1) % SLIDES.length, 0]);
+    setCurrent(([slide]) => [Math.max(slide - 1, 0), 0]);
+  }, []);
+
+  const nextSlide = React.useCallback(() => {
+    setCurrent(([slide, step]) => {
+      const nextSlide = Math.min(slide + 1, LAST_SLIDE);
+      if (slide === nextSlide) {
+        return [slide, step];
+      }
+      return [nextSlide, 0];
+    });
   }, []);
 
   const prevStep = React.useCallback(() => {
-    setCurrent(([slide, step]) => [slide, Math.max(0, step - 1)]);
+    setCurrent(([slide, step]) => {
+      if (step <= 0) {
+        const prevSlide = Math.max(slide - 1, 0);
+        const prevSlideConfig = getConfig(prevSlide);
+        return [prevSlide, prevSlideConfig.steps];
+      }
+      return [slide, Math.max(0, step - 1)];
+    });
   }, []);
 
   const nextStep = React.useCallback(() => {
-    setCurrent(([slide, step]) => [slide, step + 1]);
+    setCurrent(([slide, step]) => {
+      const currentConfig = getConfig(slide);
+      if (step >= currentConfig.steps) {
+        const nextSlide = Math.min(slide + 1, LAST_SLIDE);
+        if (nextSlide === slide) {
+          return [slide, step];
+        }
+        return [nextSlide, 0];
+      }
+      return [slide, step + 1];
+    });
   }, []);
 
   React.useEffect(() => {
@@ -68,45 +123,50 @@ const Slides = () => {
     };
   }, [prevSlide, nextSlide, nextStep, prevStep, menu]);
 
-  if (menu) {
-    return (
-      <Layout>
-        <span
-          className="back"
-          onClick={() => {
-            setMenu(false);
-          }}
-        >
-          {'<- back'}
-        </span>
-        <br />
-        {SLIDES.map((_, i) => (
-          <React.Fragment key={i}>
-            <span
-              className="nav"
-              onClick={() => {
-                setCurrent([i, 0]);
-                setMenu(false);
-              }}
-            >
-              {`// ${padLeft(i)}.mdx`}
-            </span>
-            <br />
-          </React.Fragment>
-        ))}
-      </Layout>
-    );
-  }
-
-  const [slide, step] = current;
-
   return (
-    <div>
+    <div className="main">
       <StepCtx.Provider value={step}>
-        <p onClick={() => setMenu(true)} className="nav">{`// ${padLeft(
-          slide
-        )}-${step}.mdx`}</p>
-        <Layout>{React.createElement(SLIDES[slide])}</Layout>
+        <ScrollCtx.Provider value={setY}>
+          {menu ? (
+            <Layout>
+              <nav>
+                <span
+                  className="back"
+                  onClick={() => {
+                    setMenu(false);
+                  }}
+                >
+                  {'<- back'}
+                </span>
+              </nav>
+              <br />
+              {SLIDES.map((_, i) => (
+                <React.Fragment key={i}>
+                  <span
+                    className="btn menu-btn"
+                    onClick={() => {
+                      setCurrent([i, 0]);
+                      setMenu(false);
+                    }}
+                  >
+                    {`// ${padLeft(i)}.mdx`}
+                  </span>
+                  <br />
+                </React.Fragment>
+              ))}
+            </Layout>
+          ) : (
+            <React.Fragment>
+              <nav>
+                <p className="btn" onClick={() => setMenu(true)}>{`// ${padLeft(
+                  slide
+                )}-${step}.mdx`}</p>
+                <span className="infos">{header}</span>
+              </nav>
+              <Layout>{React.createElement(currentSlide.default)}</Layout>
+            </React.Fragment>
+          )}
+        </ScrollCtx.Provider>
       </StepCtx.Provider>
     </div>
   );

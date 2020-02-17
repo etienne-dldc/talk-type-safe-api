@@ -13,7 +13,11 @@ body {
 body {
   padding: 20px 40px;
   margin: 0 auto;
-  max-width: 30rem;
+  max-width: 37rem;
+}
+
+img {
+  width: 100%;
 }
 
 h1 {
@@ -61,12 +65,24 @@ blockquote .arrows {
   overflow: hidden;
 }
 
-.nav {
+nav {
   color: #cfd8dc;
-  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.nav:hover {
+.menu-btn {
+  color: #cfd8dc;
+}
+
+.btn {
+  cursor: pointer;
+  margin: 0;
+}
+
+.btn:hover {
   color: #1565c0;
 }
 
@@ -87,4 +103,8 @@ ul {
 
 li .dash {
   color: #cfd8dc;
+}
+
+.main {
+  min-height: 500vh;
 }

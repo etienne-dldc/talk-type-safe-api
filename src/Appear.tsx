@@ -2,6 +2,10 @@ import React from 'react';
 
 export const StepCtx = React.createContext(0);
 
+export const ScrollCtx = React.createContext<(target: number) => void>(
+  () => {}
+);
+
 export const useStep = () => React.useContext(StepCtx);
 
 type StepsConfig =
@@ -19,9 +23,31 @@ export interface AppearProps {
 export const Appear: React.FC<AppearProps> = ({ step = 0, children }) => {
   const currentStep = useStep();
   const visible = resolveStepsConfig(step, currentStep);
+  const scrollTo = React.useContext(ScrollCtx);
+  const containerRef = React.useRef<HTMLDivElement>();
+  const lastScrollRef = React.useRef(window.scrollY);
+
+  React.useEffect(() => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      if (visible) {
+        const target =
+          window.scrollY + rect.top + rect.height / 2 - window.innerHeight / 2;
+        lastScrollRef.current = window.scrollY;
+        scrollTo(Math.max(0, target));
+      } else {
+        scrollTo(lastScrollRef.current);
+      }
+    }
+  }, [scrollTo, visible]);
 
   return (
-    <div style={{ visibility: visible ? 'visible' : 'hidden' }}>{children}</div>
+    <div
+      ref={containerRef as any}
+      style={{ opacity: visible ? '1' : '0', transitionDuration: '0.2s' }}
+    >
+      {children}
+    </div>
   );
 };
 
@@ -32,7 +58,7 @@ interface ChainProps {
 
 export const Chain: React.FC<ChainProps> = ({ children, start = 1 }) => {
   return React.Children.map(children, (item, i) => {
-    return React.cloneElement(item, { step: { start: start + i } });
+    return <Appear step={{ start: start + i }}>{item}</Appear>;
   }) as any;
 };
 
