@@ -8,6 +8,9 @@ body {
   font-size: 40px;
   letter-spacing: -0.05rem;
   font-feature-settings: 'calt';
+}
+
+html {
   overflow-x: hidden;
 }
 
