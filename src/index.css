@@ -1,33 +1,66 @@
-html,
-body {
-  margin: 0;
-  font-family: 'Fira Code';
+html {
   background: white;
   color: #263238;
-  line-height: 1.5;
   font-size: 40px;
-  letter-spacing: -0.05rem;
-  font-feature-settings: 'calt';
-}
-
-html {
+  line-height: 1.5;
   overflow-x: hidden;
+  margin: 0;
 }
 
 body {
+  font-family: 'Fira Code';
+  font-feature-settings: 'calt';
+  letter-spacing: -0.05rem;
   padding: 20px 40px;
   margin: 0 auto;
-  max-width: 37rem;
+  max-width: 38rem;
+}
+
+nav {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2rem;
+  color: #cfd8dc;
+  background: white;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  box-shadow: none;
+  transition-duration: 0.1s;
+  transition-property: box-shadow;
+}
+
+nav.scroll {
+  box-shadow: 0px 5px 10px 0px #0000000d;
+}
+
+nav > div {
+  height: 100%;
+  margin: 0 auto;
+  max-width: 38rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.page {
+  padding-top: 3rem;
 }
 
 img {
-  width: 100%;
+  display: flex;
+  width: auto;
+  height: 80vh;
 }
 
 h1 {
   font-size: 1.5rem;
   color: #1565c0;
   font-weight: normal;
+  margin: 0;
 }
 
 h1 span {
@@ -69,14 +102,6 @@ blockquote .arrows {
   overflow: hidden;
 }
 
-nav {
-  color: #cfd8dc;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .menu-btn {
   color: #cfd8dc;
 }
@@ -111,4 +136,10 @@ li .dash {
 
 .main {
   min-height: 500vh;
+}
+
+pre.code-highlight {
+  border-radius: 5px;
+  overflow: auto;
+  line-height: 1.4;
 }

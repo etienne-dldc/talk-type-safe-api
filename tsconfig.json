@@ -10,6 +10,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
     "baseUrl": "./slides",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

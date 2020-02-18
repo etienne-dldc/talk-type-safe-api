@@ -1,6 +1,7 @@
 import React from 'react';
 import './index.css';
 import { MDXProvider } from '@mdx-js/react';
+import { CodeHighlight } from './CodeHighlight';
 
 const H1 = ({ children }: any) => (
   <h1>
@@ -45,23 +46,33 @@ const ListItem = ({ children }: any) => (
   </li>
 );
 
+const Pre = (props: any) => {
+  return (
+    <CodeHighlight
+      code={props.children.props.children}
+      language={props.children.props.props.className.replace('language-', '')}
+    />
+  );
+};
+
 const COMPONENTS = {
   h1: H1,
   h2: H2,
   a: Link,
   blockquote: Blockquote,
-  li: ListItem
+  li: ListItem,
+  pre: Pre
 };
 
 const Layout = ({ children }: any) => {
   // inject components
-  traverseChildren(children);
+  injectComponents(children);
 
   return <MDXProvider components={COMPONENTS}>{children}</MDXProvider>;
   // return <div>{children}</div>;
 };
 
-function traverseChildren(children: any): void {
+export function injectComponents(children: any): void {
   if (!children) {
     return;
   }
@@ -69,17 +80,17 @@ function traverseChildren(children: any): void {
     return;
   }
   if (Array.isArray(children)) {
-    children.forEach(child => traverseChildren(child));
+    children.forEach(child => injectComponents(child));
     return;
   }
   if (React.isValidElement(children)) {
     if (typeof children.type === 'string') {
-      traverseChildren((children.props as any).children);
+      injectComponents((children.props as any).children);
       return;
     }
     if (children.props && (children.props as any).name) {
       (children.props as any).components = COMPONENTS;
-      traverseChildren((children.props as any).children);
+      injectComponents((children.props as any).children);
       return;
     }
     return;

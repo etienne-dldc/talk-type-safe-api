@@ -5,6 +5,12 @@ import * as _03 from '../slides/03.mdx';
 import Layout from './Layout';
 import { StepCtx, ScrollCtx } from './Appear';
 import { useSpring, config, useTransition, animated } from 'react-spring';
+import vscodeConfig from '../.vscode/settings.json';
+
+const IS_DEV = !(
+  (vscodeConfig as any)['window.zoomLevel'] &&
+  (vscodeConfig as any)['window.zoomLevel'] === -1
+);
 
 const SLIDES = [_01, _02, _03];
 
@@ -34,6 +40,29 @@ interface Props {
 }
 
 const Slides: React.FC<Props> = ({ header = '' }) => {
+  const navRef = React.useRef<HTMLElement>();
+
+  React.useEffect(() => {
+    if (IS_DEV) {
+      const htmlEl = document.body.parentElement;
+      if (htmlEl) {
+        htmlEl.style.fontSize = '20px';
+      }
+    }
+  }, []);
+
+  React.useEffect(() => {
+    window.addEventListener('scroll', () => {
+      if (navRef.current) {
+        if (window.scrollY > 10) {
+          navRef.current.classList.add('scroll');
+        } else {
+          navRef.current.classList.remove('scroll');
+        }
+      }
+    });
+  }, []);
+
   const [, setYInternal] = useSpring<{ y: number }>(() => ({
     immediate: false,
     y: 0,
@@ -163,9 +192,9 @@ const Slides: React.FC<Props> = ({ header = '' }) => {
     <div className="main">
       <StepCtx.Provider value={step}>
         <ScrollCtx.Provider value={setY}>
-          {menu ? (
-            <Layout>
-              <nav>
+          <nav ref={navRef as any}>
+            <div>
+              {menu ? (
                 <span
                   className="back"
                   onClick={() => {
@@ -174,41 +203,45 @@ const Slides: React.FC<Props> = ({ header = '' }) => {
                 >
                   {'<- back'}
                 </span>
-              </nav>
-              <br />
-              {SLIDES.map((_, i) => (
-                <React.Fragment key={i}>
-                  <span
-                    className="btn menu-btn"
-                    onClick={() => {
-                      setCurrent([i, 0]);
-                      setMenu(false);
-                    }}
-                  >
-                    {`// ${padLeft(i)}.mdx`}
-                  </span>
-                  <br />
-                </React.Fragment>
-              ))}
-            </Layout>
-          ) : (
-            <React.Fragment>
-              <nav>
+              ) : (
                 <p className="btn" onClick={() => setMenu(true)}>{`// ${padLeft(
                   slide
                 )}-${step}.mdx`}</p>
-                <span className="infos">{header}</span>
-              </nav>
+              )}
+              <span className="infos">{header}</span>
+            </div>
+          </nav>
+          <div className="page">
+            {menu ? (
               <Layout>
-                <div style={{ position: 'relative' }}>
-                  {transitions.map(({ item, props, key }) => {
-                    const Page = PAGES[item];
-                    return <Page key={key} style={props} />;
-                  })}
-                </div>
+                {SLIDES.map((_, i) => (
+                  <React.Fragment key={i}>
+                    <span
+                      className="btn menu-btn"
+                      onClick={() => {
+                        setCurrent([i, 0]);
+                        setMenu(false);
+                      }}
+                    >
+                      {`// ${padLeft(i)}.mdx`}
+                    </span>
+                    <br />
+                  </React.Fragment>
+                ))}
               </Layout>
-            </React.Fragment>
-          )}
+            ) : (
+              <React.Fragment>
+                <Layout>
+                  <div style={{ position: 'relative' }}>
+                    {transitions.map(({ item, props, key }) => {
+                      const Page = PAGES[item];
+                      return <Page key={key} style={props} />;
+                    })}
+                  </div>
+                </Layout>
+              </React.Fragment>
+            )}
+          </div>
         </ScrollCtx.Provider>
       </StepCtx.Provider>
     </div>
@@ -216,7 +249,7 @@ const Slides: React.FC<Props> = ({ header = '' }) => {
 };
 
 function padLeft(num: number): string {
-  return (num < 10 ? '00' : num < 100 ? '0' : '') + num.toFixed(0);
+  return (num < 10 ? '0' : '') + num.toFixed(0);
 }
 
 export default Slides;

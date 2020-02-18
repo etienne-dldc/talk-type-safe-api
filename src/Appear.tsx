@@ -1,4 +1,5 @@
 import React from 'react';
+import { injectComponents } from './Layout';
 
 export const StepCtx = React.createContext(0);
 
@@ -34,8 +35,8 @@ export const Appear: React.FC<AppearProps> = ({ step = 0, children }) => {
         const target =
           window.scrollY +
           rect.top +
-          rect.height / 2 -
-          window.innerHeight * 0.75;
+          rect.height * 0.8 -
+          window.innerHeight * 0.8;
         lastScrollRef.current = window.scrollY;
         scrollTo(Math.max(0, target));
       } else {
@@ -60,6 +61,8 @@ interface ChainProps {
 }
 
 export const Chain: React.FC<ChainProps> = ({ children, start = 1 }) => {
+  injectComponents(children);
+
   return React.Children.map(children, (item, i) => {
     return <Appear step={{ start: start + i }}>{item}</Appear>;
   }) as any;
