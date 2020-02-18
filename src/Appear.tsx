@@ -32,7 +32,10 @@ export const Appear: React.FC<AppearProps> = ({ step = 0, children }) => {
       const rect = containerRef.current.getBoundingClientRect();
       if (visible) {
         const target =
-          window.scrollY + rect.top + rect.height / 2 - window.innerHeight / 2;
+          window.scrollY +
+          rect.top +
+          rect.height / 2 -
+          window.innerHeight * 0.75;
         lastScrollRef.current = window.scrollY;
         scrollTo(Math.max(0, target));
       } else {

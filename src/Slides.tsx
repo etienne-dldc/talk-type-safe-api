@@ -4,9 +4,18 @@ import * as _02 from '../slides/02.mdx';
 import * as _03 from '../slides/03.mdx';
 import Layout from './Layout';
 import { StepCtx, ScrollCtx } from './Appear';
-import { useSpring, config } from 'react-spring';
+import { useSpring, config, useTransition, animated } from 'react-spring';
 
 const SLIDES = [_01, _02, _03];
+
+const PAGES = SLIDES.map(slide => {
+  const Page = slide.default;
+  return ({ style }: any) => (
+    <animated.div style={{ ...style, padding: 1 }}>
+      <Page />
+    </animated.div>
+  );
+});
 
 const LAST_SLIDE = SLIDES.length - 1;
 
@@ -39,6 +48,11 @@ const Slides: React.FC<Props> = ({ header = '' }) => {
 
   const [slide, step] = current;
 
+  const [prevSlideState, setPrevSlide] = React.useState(slide);
+  React.useEffect(() => {
+    setPrevSlide(slide);
+  }, [slide]);
+
   const setYRef = React.useRef(setYInternal);
   setYRef.current = setYInternal;
 
@@ -53,8 +67,6 @@ const Slides: React.FC<Props> = ({ header = '' }) => {
   React.useEffect(() => {
     setY(0);
   }, [slide, setY]);
-
-  const currentSlide = SLIDES[slide];
 
   const prevSlide = React.useCallback(() => {
     setCurrent(([slide]) => [Math.max(slide - 1, 0), 0]);
@@ -123,6 +135,30 @@ const Slides: React.FC<Props> = ({ header = '' }) => {
     };
   }, [prevSlide, nextSlide, nextStep, prevStep, menu]);
 
+  const transitions = useTransition(slide, p => p, {
+    config: config.default,
+
+    from: index => {
+      return {
+        opacity: 0,
+        transform:
+          index < prevSlideState
+            ? 'translate3d(-100vw,0,0)'
+            : 'translate3d(100vw,0,0)'
+      };
+    },
+    enter: { opacity: 1, transform: 'translate3d(0%,0,0)' },
+    leave: index => {
+      return {
+        position: 'absolute',
+        top: 0,
+        opacity: 0,
+        transform:
+          index < slide ? 'translate3d(-100vw,0,0)' : 'translate3d(100vw,0,0)'
+      };
+    }
+  });
+
   return (
     <div className="main">
       <StepCtx.Provider value={step}>
@@ -163,7 +199,14 @@ const Slides: React.FC<Props> = ({ header = '' }) => {
                 )}-${step}.mdx`}</p>
                 <span className="infos">{header}</span>
               </nav>
-              <Layout>{React.createElement(currentSlide.default)}</Layout>
+              <Layout>
+                <div style={{ position: 'relative' }}>
+                  {transitions.map(({ item, props, key }) => {
+                    const Page = PAGES[item];
+                    return <Page key={key} style={props} />;
+                  })}
+                </div>
+              </Layout>
             </React.Fragment>
           )}
         </ScrollCtx.Provider>
