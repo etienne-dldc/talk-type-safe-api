@@ -2,6 +2,7 @@ import React from 'react';
 import * as _01 from '../slides/01.mdx';
 import * as _02 from '../slides/02.mdx';
 import * as _03 from '../slides/03.mdx';
+import * as _04 from '../slides/04.mdx';
 import Layout from './Layout';
 import { StepCtx, ScrollCtx } from './Appear';
 import { useSpring, config, useTransition, animated } from 'react-spring';
@@ -12,7 +13,7 @@ const IS_DEV = !(
   (vscodeConfig as any)['window.zoomLevel'] === -1
 );
 
-const SLIDES = [_01, _02, _03];
+const SLIDES = [_01, _02, _03, _04];
 
 const PAGES = SLIDES.map(slide => {
   const Page = slide.default;
