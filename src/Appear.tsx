@@ -1,5 +1,5 @@
 import React from 'react';
-import { injectComponents } from './Layout';
+// import { injectComponents } from './Layout';
 
 export const StepCtx = React.createContext(0);
 
@@ -21,8 +21,16 @@ export interface AppearProps {
   step?: StepsConfig;
 }
 
-export const Appear: React.FC<AppearProps> = ({ step = 0, children }) => {
+export const Appear: React.FC<AppearProps> = props => {
+  console.log(props);
+  const { step = 0, children } = props;
+
   const currentStep = useStep();
+
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
   const visible = resolveStepsConfig(step, currentStep);
   const scrollTo = React.useContext(ScrollCtx);
   const containerRef = React.useRef<HTMLDivElement>();
@@ -48,29 +56,32 @@ export const Appear: React.FC<AppearProps> = ({ step = 0, children }) => {
   return (
     <div
       ref={containerRef as any}
-      style={{ opacity: visible ? '1' : '0', transitionDuration: '0.2s' }}
+      style={{
+        opacity: visible ? '1' : '0',
+        transitionDuration: mounted ? '0s' : '0.2s'
+      }}
     >
       {children}
     </div>
   );
 };
 
-interface ChainProps {
-  children: Array<React.ReactElement<{ step?: StepsConfig }>>;
-  start?: number;
-}
+// interface ChainProps {
+//   children: Array<React.ReactElement<{ step?: StepsConfig }>>;
+//   start?: number;
+// }
 
-export const Chain: React.FC<ChainProps> = ({ children, start = 1 }) => {
-  injectComponents(children);
+// export const Chain: React.FC<ChainProps> = ({ children, start = 1 }) => {
+//   injectComponents(children);
 
-  return React.Children.map(children, (item, i) => {
-    return <Appear step={{ start: start + i }}>{item}</Appear>;
-  }) as any;
-};
+//   return React.Children.map(children, (item, i) => {
+//     return <Appear step={{ start: start + i }}>{item}</Appear>;
+//   }) as any;
+// };
 
 function resolveStepsConfig(config: StepsConfig, step: number): boolean {
   if (typeof config === 'number') {
-    return config === step;
+    return step >= config;
   }
   if ('step' in config) {
     return config.step === step;

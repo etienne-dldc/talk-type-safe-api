@@ -1,7 +1,7 @@
 html {
   background: white;
   color: #263238;
-  font-size: 40px;
+  font-size: 20px;
   line-height: 1.5;
   overflow-x: hidden;
   margin: 0;
@@ -50,10 +50,18 @@ nav > div {
   padding-top: 3rem;
 }
 
-img {
+.img-wrapper {
+  max-height: 80vh;
   display: flex;
   width: auto;
-  height: 80vh;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.img-wrapper img {
+  max-width: 100%;
+  width: 100%;
 }
 
 h1 {
@@ -85,20 +93,21 @@ p {
 }
 
 blockquote {
+  margin: 0;
+  margin-top: 1rem;
   background: none;
   font-style: italic;
   position: relative;
-  margin: 0;
   margin-left: 30px;
   padding: 1px;
 }
 
 blockquote .arrows {
   position: absolute;
-  top: 1.5rem;
+  top: 0;
+  bottom: 0;
   left: -30px;
   color: #cfd8dc;
-  bottom: 0;
   overflow: hidden;
 }
 
@@ -128,6 +137,7 @@ ul {
   margin: 0;
   list-style: none;
   padding: 0;
+  margin-top: 1rem;
 }
 
 li .dash {

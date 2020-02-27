@@ -1,56 +1,41 @@
 import React from 'react';
-import * as _01 from '../slides/01.mdx';
-import * as _02 from '../slides/02.mdx';
-import * as _03 from '../slides/03.mdx';
-import * as _04 from '../slides/04.mdx';
-import Layout from './Layout';
+import { Document, resolve, ResolveValues } from 'docsy';
 import { StepCtx, ScrollCtx } from './Appear';
-import { useSpring, config, useTransition, animated } from 'react-spring';
-import vscodeConfig from '../.vscode/settings.json';
+import { useSpring, config } from 'react-spring';
+import { Appear } from './Appear';
+import * as COMPONENTS from './DocsyComponents';
 
-const IS_DEV = !(
-  (vscodeConfig as any)['window.zoomLevel'] &&
-  (vscodeConfig as any)['window.zoomLevel'] === -1
-);
-
-const SLIDES = [_01, _02, _03, _04];
-
-const PAGES = SLIDES.map(slide => {
-  const Page = slide.default;
-  return ({ style }: any) => (
-    <animated.div style={{ ...style, padding: 1 }}>
-      <Page />
-    </animated.div>
-  );
-});
-
-const LAST_SLIDE = SLIDES.length - 1;
-
-interface Config {
-  steps: number;
-}
-
-function getConfig(slideIndex: number): Config {
-  const currentSlide = SLIDES[slideIndex];
-  const currentConfig: Config = (currentSlide as any).config || { steps: 0 };
-  return currentConfig;
-}
+export type SlideItem =
+  | {
+      type: 'slide';
+      url: string;
+      path: Array<string>;
+      content: Document;
+      steps: number;
+    }
+  | {
+      type: 'error';
+      url: string;
+      path: Array<string>;
+      error: JSX.Element;
+      steps: number;
+    };
 
 interface Props {
-  header?: string;
+  slides: Array<SlideItem>;
+  header: string;
 }
 
-const Slides: React.FC<Props> = ({ header = '' }) => {
+const RESOLVE_VALUES: ResolveValues = {
+  createElement: React.createElement,
+  Step: Appear,
+  ...COMPONENTS
+};
+
+export const Slides: React.FC<Props> = ({ slides, header }) => {
   const navRef = React.useRef<HTMLElement>();
 
-  React.useEffect(() => {
-    if (IS_DEV) {
-      const htmlEl = document.body.parentElement;
-      if (htmlEl) {
-        htmlEl.style.fontSize = '20px';
-      }
-    }
-  }, []);
+  const LAST_SLIDE = slides.length - 1;
 
   React.useEffect(() => {
     window.addEventListener('scroll', () => {
@@ -75,13 +60,12 @@ const Slides: React.FC<Props> = ({ header = '' }) => {
 
   const [menu, setMenu] = React.useState(false);
   const [current, setCurrent] = React.useState<[number, number]>([0, 0]);
-
   const [slide, step] = current;
+  // const [prevSlideState, setPrevSlide] = React.useState(slide);
 
-  const [prevSlideState, setPrevSlide] = React.useState(slide);
-  React.useEffect(() => {
-    setPrevSlide(slide);
-  }, [slide]);
+  // React.useEffect(() => {
+  //   setPrevSlide(slide);
+  // }, [slide]);
 
   const setYRef = React.useRef(setYInternal);
   setYRef.current = setYInternal;
@@ -110,32 +94,37 @@ const Slides: React.FC<Props> = ({ header = '' }) => {
       }
       return [nextSlide, 0];
     });
-  }, []);
+  }, [LAST_SLIDE]);
 
   const prevStep = React.useCallback(() => {
-    setCurrent(([slide, step]) => {
+    setCurrent(prevState => {
+      const [slide, step] = prevState;
+      if (slide <= 0 && step <= 0) {
+        return prevState;
+      }
       if (step <= 0) {
         const prevSlide = Math.max(slide - 1, 0);
-        const prevSlideConfig = getConfig(prevSlide);
-        return [prevSlide, prevSlideConfig.steps];
+        const prevSlideSteps = slides[prevSlide].steps;
+        return [prevSlide, prevSlideSteps];
       }
       return [slide, Math.max(0, step - 1)];
     });
-  }, []);
+  }, [slides]);
 
   const nextStep = React.useCallback(() => {
-    setCurrent(([slide, step]) => {
-      const currentConfig = getConfig(slide);
-      if (step >= currentConfig.steps) {
+    setCurrent(prevState => {
+      const [slide, step] = prevState;
+      const currentSteps = slides[slide].steps;
+      if (step >= currentSteps) {
         const nextSlide = Math.min(slide + 1, LAST_SLIDE);
         if (nextSlide === slide) {
-          return [slide, step];
+          return prevState;
         }
         return [nextSlide, 0];
       }
       return [slide, step + 1];
     });
-  }, []);
+  }, [LAST_SLIDE, slides]);
 
   React.useEffect(() => {
     if (menu) {
@@ -163,31 +152,48 @@ const Slides: React.FC<Props> = ({ header = '' }) => {
     return () => {
       window.removeEventListener('keydown', onKeydown);
     };
-  }, [prevSlide, nextSlide, nextStep, prevStep, menu]);
+  }, [prevSlide, nextSlide, menu, nextStep, prevStep]);
 
-  const transitions = useTransition(slide, p => p, {
-    config: config.default,
+  // const transitions = useTransition(slide, p => p, {
+  //   config: config.default,
+  //   from: index => {
+  //     return {
+  //       opacity: 0,
+  //       transform:
+  //         index < prevSlideState
+  //           ? 'translate3d(-100vw,0,0)'
+  //           : 'translate3d(100vw,0,0)'
+  //     };
+  //   },
+  //   enter: { opacity: 1, transform: 'translate3d(0%,0,0)' },
+  //   leave: index => {
+  //     return {
+  //       position: 'absolute',
+  //       top: 0,
+  //       opacity: 0,
+  //       transform:
+  //         index < slide ? 'translate3d(-100vw,0,0)' : 'translate3d(100vw,0,0)'
+  //     };
+  //   }
+  // });
 
-    from: index => {
-      return {
-        opacity: 0,
-        transform:
-          index < prevSlideState
-            ? 'translate3d(-100vw,0,0)'
-            : 'translate3d(100vw,0,0)'
-      };
-    },
-    enter: { opacity: 1, transform: 'translate3d(0%,0,0)' },
-    leave: index => {
-      return {
-        position: 'absolute',
-        top: 0,
-        opacity: 0,
-        transform:
-          index < slide ? 'translate3d(-100vw,0,0)' : 'translate3d(100vw,0,0)'
-      };
+  const currentSlide = slides[slide];
+
+  const content = React.useMemo(() => {
+    if (!currentSlide) {
+      return null;
     }
-  });
+    if (currentSlide.type === 'error') {
+      return currentSlide.error;
+    }
+    try {
+      const items = resolve(currentSlide.content, RESOLVE_VALUES);
+      return React.createElement(React.Fragment, null, ...items);
+    } catch (error) {
+      console.error(error);
+      return <div>Error: {String(error)}</div>;
+    }
+  }, [currentSlide]);
 
   return (
     <div className="main">
@@ -205,17 +211,18 @@ const Slides: React.FC<Props> = ({ header = '' }) => {
                   {'<- back'}
                 </span>
               ) : (
-                <p className="btn" onClick={() => setMenu(true)}>{`// ${padLeft(
-                  slide
-                )}-${step}.mdx`}</p>
+                <p
+                  className="btn"
+                  onClick={() => setMenu(true)}
+                >{`// ${currentSlide.path.join('/')}.dy`}</p>
               )}
               <span className="infos">{header}</span>
             </div>
           </nav>
           <div className="page">
             {menu ? (
-              <Layout>
-                {SLIDES.map((_, i) => (
+              <div>
+                {slides.map((slide, i) => (
                   <React.Fragment key={i}>
                     <span
                       className="btn menu-btn"
@@ -224,23 +231,22 @@ const Slides: React.FC<Props> = ({ header = '' }) => {
                         setMenu(false);
                       }}
                     >
-                      {`// ${padLeft(i)}.mdx`}
+                      {`// ${slide.path.join('/')}.dy`}
                     </span>
                     <br />
                   </React.Fragment>
                 ))}
-              </Layout>
+              </div>
             ) : (
-              <React.Fragment>
-                <Layout>
-                  <div style={{ position: 'relative' }}>
-                    {transitions.map(({ item, props, key }) => {
+              <div>
+                <div style={{ position: 'relative' }}>
+                  {content}
+                  {/* {transitions.map(({ item, props, key }) => {
                       const Page = PAGES[item];
                       return <Page key={key} style={props} />;
-                    })}
-                  </div>
-                </Layout>
-              </React.Fragment>
+                    })} */}
+                </div>
+              </div>
             )}
           </div>
         </ScrollCtx.Provider>
@@ -248,9 +254,3 @@ const Slides: React.FC<Props> = ({ header = '' }) => {
     </div>
   );
 };
-
-function padLeft(num: number): string {
-  return (num < 10 ? '0' : '') + num.toFixed(0);
-}
-
-export default Slides;
