@@ -11,20 +11,17 @@ export const useStep = () => React.useContext(StepCtx);
 
 type StepsConfig =
   | number
-  | { step: number }
+  | { exact: number }
   | { steps: Array<number> }
   | { start: number }
   | { end: number }
   | { start: number; end: number };
 
-export interface AppearProps {
+export interface StepProps {
   step?: StepsConfig;
 }
 
-export const Appear: React.FC<AppearProps> = props => {
-  console.log(props);
-  const { step = 0, children } = props;
-
+export const Step: React.FC<StepProps> = ({ step = 0, children }) => {
   const currentStep = useStep();
 
   const [mounted, setMounted] = React.useState(false);
@@ -66,25 +63,33 @@ export const Appear: React.FC<AppearProps> = props => {
   );
 };
 
-// interface ChainProps {
-//   children: Array<React.ReactElement<{ step?: StepsConfig }>>;
-//   start?: number;
-// }
-
-// export const Chain: React.FC<ChainProps> = ({ children, start = 1 }) => {
-//   injectComponents(children);
-
-//   return React.Children.map(children, (item, i) => {
-//     return <Appear step={{ start: start + i }}>{item}</Appear>;
-//   }) as any;
-// };
+export function resolveMaxStepsConfig(config: StepsConfig): number {
+  if (typeof config === 'number') {
+    return config;
+  }
+  if ('exact' in config) {
+    return config.exact;
+  }
+  if ('steps' in config) {
+    return Math.max(...config.steps);
+  }
+  const start = 'start' in config ? config.start : null;
+  const end = 'end' in config ? config.end : null;
+  if (end !== null) {
+    return end;
+  }
+  if (start !== null) {
+    return start;
+  }
+  return 0;
+}
 
 function resolveStepsConfig(config: StepsConfig, step: number): boolean {
   if (typeof config === 'number') {
     return step >= config;
   }
-  if ('step' in config) {
-    return config.step === step;
+  if ('exact' in config) {
+    return config.exact === step;
   }
   if ('steps' in config) {
     return config.steps.includes(step);

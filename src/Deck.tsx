@@ -1,6 +1,14 @@
 import React from 'react';
-import { parse, traverse, NodeIs, resolve, CreateNode } from 'docsy';
+import {
+  parse,
+  traverse,
+  NodeIs,
+  resolve,
+  CreateNode,
+  createNodeFromValue
+} from 'docsy';
 import { Slides, SlideItem } from './Slides';
+import { StepProps, resolveMaxStepsConfig } from './Step';
 
 type Folder = { [key: string]: string | Folder };
 
@@ -107,20 +115,23 @@ const Deck: React.FC<Props> = ({ header = '', files }) => {
                 node.component.name === 'Step'
               ) {
                 stepCount += 1;
-                const props = resolve(node.props, { createElement: () => {} });
-                const step = props.step || stepCount;
+                const props: StepProps = resolve(node.props, {
+                  createElement: () => {}
+                });
+                const step = props.step || maxStep + 1;
                 if (props.step === undefined) {
                   node.props.items.push(
                     CreateNode.Prop({
                       name: CreateNode.Identifier({ name: 'step' }),
-                      value: CreateNode.Num({
-                        value: step,
-                        rawValue: String(step)
-                      })
+                      value: createNodeFromValue(step)
                     })
                   );
                 }
-                maxStep = Math.max(step, stepCount);
+                maxStep = Math.max(
+                  maxStep,
+                  resolveMaxStepsConfig(step),
+                  stepCount
+                );
               }
             }
           });
@@ -128,6 +139,7 @@ const Deck: React.FC<Props> = ({ header = '', files }) => {
             type: 'slide',
             url: page.url,
             path: page.path,
+            slug: '/' + page.path.join('/'),
             content: parsed,
             steps: maxStep
           };
@@ -137,6 +149,7 @@ const Deck: React.FC<Props> = ({ header = '', files }) => {
             steps: 0,
             url: page.url,
             path: page.path,
+            slug: '/' + page.path.join('/'),
             type: 'error',
             error: <div>Error: {String(error)}</div>
           };

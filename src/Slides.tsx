@@ -1,15 +1,18 @@
 import React from 'react';
 import { Document, resolve, ResolveValues } from 'docsy';
-import { StepCtx, ScrollCtx } from './Appear';
+import { StepCtx, ScrollCtx } from './Step';
 import { useSpring, config } from 'react-spring';
-import { Appear } from './Appear';
+import { Step } from './Step';
 import * as COMPONENTS from './DocsyComponents';
+import { createBrowserHistory, Location } from 'history';
+import qs from 'query-string';
 
 export type SlideItem =
   | {
       type: 'slide';
       url: string;
       path: Array<string>;
+      slug: string;
       content: Document;
       steps: number;
     }
@@ -17,6 +20,7 @@ export type SlideItem =
       type: 'error';
       url: string;
       path: Array<string>;
+      slug: string;
       error: JSX.Element;
       steps: number;
     };
@@ -28,12 +32,43 @@ interface Props {
 
 const RESOLVE_VALUES: ResolveValues = {
   createElement: React.createElement,
-  Step: Appear,
+  Step: Step,
   ...COMPONENTS
 };
 
+const history = createBrowserHistory();
+
+function stateFromLocation(
+  location: Location,
+  slides: Array<SlideItem>
+): [number, number] {
+  const { pathname, search } = location;
+  const parsed = qs.parse(search, { parseNumbers: true });
+  const step = typeof parsed.step === 'number' ? parsed.step : 0;
+  const res = slides.findIndex(slide => {
+    return slide.slug === pathname;
+  });
+  const slide = res === -1 ? 0 : res;
+  return [slide, step];
+}
+
 export const Slides: React.FC<Props> = ({ slides, header }) => {
   const navRef = React.useRef<HTMLElement>();
+
+  const [location, setLocation] = React.useState(history.location);
+  const locationRef = React.useRef(location);
+  locationRef.current = location;
+
+  React.useEffect(() => {
+    return history.listen(nextLocation => {
+      setLocation(nextLocation);
+    });
+  }, []);
+
+  const [slide, step] = React.useMemo(
+    () => stateFromLocation(location, slides),
+    [location, slides]
+  );
 
   const LAST_SLIDE = slides.length - 1;
 
@@ -58,9 +93,19 @@ export const Slides: React.FC<Props> = ({ slides, header }) => {
     config: config.default
   }));
 
+  const setCurrent = React.useCallback(
+    (exec: (prev: [number, number]) => [number, number]) => {
+      const [slideIndex, step] = exec(
+        stateFromLocation(locationRef.current, slides)
+      );
+      const slide = slides[slideIndex];
+      history.push(`${slide.slug}?step=${step}`);
+    },
+    [slides]
+  );
+
   const [menu, setMenu] = React.useState(false);
-  const [current, setCurrent] = React.useState<[number, number]>([0, 0]);
-  const [slide, step] = current;
+  // const [, setCurrent] = React.useState<[number, number]>([0, 0]);
   // const [prevSlideState, setPrevSlide] = React.useState(slide);
 
   // React.useEffect(() => {
@@ -84,7 +129,7 @@ export const Slides: React.FC<Props> = ({ slides, header }) => {
 
   const prevSlide = React.useCallback(() => {
     setCurrent(([slide]) => [Math.max(slide - 1, 0), 0]);
-  }, []);
+  }, [setCurrent]);
 
   const nextSlide = React.useCallback(() => {
     setCurrent(([slide, step]) => {
@@ -94,7 +139,7 @@ export const Slides: React.FC<Props> = ({ slides, header }) => {
       }
       return [nextSlide, 0];
     });
-  }, [LAST_SLIDE]);
+  }, [LAST_SLIDE, setCurrent]);
 
   const prevStep = React.useCallback(() => {
     setCurrent(prevState => {
@@ -109,7 +154,7 @@ export const Slides: React.FC<Props> = ({ slides, header }) => {
       }
       return [slide, Math.max(0, step - 1)];
     });
-  }, [slides]);
+  }, [setCurrent, slides]);
 
   const nextStep = React.useCallback(() => {
     setCurrent(prevState => {
@@ -124,7 +169,7 @@ export const Slides: React.FC<Props> = ({ slides, header }) => {
       }
       return [slide, step + 1];
     });
-  }, [LAST_SLIDE, slides]);
+  }, [LAST_SLIDE, setCurrent, slides]);
 
   React.useEffect(() => {
     if (menu) {
@@ -214,7 +259,7 @@ export const Slides: React.FC<Props> = ({ slides, header }) => {
                 <p
                   className="btn"
                   onClick={() => setMenu(true)}
-                >{`// ${currentSlide.path.join('/')}.dy`}</p>
+                >{`// ${currentSlide.slug.slice(1)}.dy`}</p>
               )}
               <span className="infos">{header}</span>
             </div>
@@ -227,7 +272,7 @@ export const Slides: React.FC<Props> = ({ slides, header }) => {
                     <span
                       className="btn menu-btn"
                       onClick={() => {
-                        setCurrent([i, 0]);
+                        setCurrent(() => [i, 0]);
                         setMenu(false);
                       }}
                     >
