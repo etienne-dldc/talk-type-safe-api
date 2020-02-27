@@ -19,15 +19,11 @@ type StepsConfig =
 
 export interface StepProps {
   step?: StepsConfig;
+  inline?: boolean;
 }
 
-export const Step: React.FC<StepProps> = ({ step = 0, children }) => {
+export const Step: React.FC<StepProps> = ({ step = 0, children, inline }) => {
   const currentStep = useStep();
-
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
   const visible = resolveStepsConfig(step, currentStep);
   const scrollTo = React.useContext(ScrollCtx);
   const containerRef = React.useRef<HTMLDivElement>();
@@ -50,16 +46,19 @@ export const Step: React.FC<StepProps> = ({ step = 0, children }) => {
     }
   }, [scrollTo, visible]);
 
+  const Wrapper = inline ? 'span' : 'div';
+
   return (
-    <div
+    <Wrapper
       ref={containerRef as any}
       style={{
         opacity: visible ? '1' : '0',
-        transitionDuration: mounted ? '0s' : '0.2s'
+        transitionDuration: '0.3s',
+        visibility: visible ? 'visible' : 'hidden'
       }}
     >
       {children}
-    </div>
+    </Wrapper>
   );
 };
 

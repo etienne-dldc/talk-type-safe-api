@@ -1,6 +1,7 @@
 import React from 'react';
 import { CodeHighlight } from './CodeHighlight';
 import { Language } from 'prism-react-renderer';
+import { NavContex } from './NavContext';
 
 export const Title: React.FC = ({ children }) => {
   return (
@@ -29,6 +30,25 @@ export const Link: React.FC<{ to: string }> = ({ to, children }) => (
   </span>
 );
 
+export const PageLink: React.FC<{ to: string }> = ({ to, children }) => {
+  const nav = React.useContext(NavContex);
+
+  return (
+    <span style={{ color: '#CFD8DC' }}>
+      <a
+        style={{ color: '#1A237E' }}
+        href={to}
+        onClick={e => {
+          e.preventDefault();
+          nav.push(to);
+        }}
+      >
+        {children}
+      </a>
+    </span>
+  );
+};
+
 export const Quote: React.FC = ({ children }) => (
   <blockquote>
     <span className="arrows">
@@ -45,7 +65,7 @@ export const Quote: React.FC = ({ children }) => (
 
 export const List: React.FC = ({ children }) => <ul>{children}</ul>;
 
-export const ListItem: React.FC = ({ children }) => (
+export const Li: React.FC = ({ children }) => (
   <li>
     <span className="dash">{`- `}</span>
     {children}

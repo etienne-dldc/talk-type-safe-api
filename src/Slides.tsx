@@ -1,40 +1,22 @@
 import React from 'react';
-import { Document, resolve, ResolveValues } from 'docsy';
 import { StepCtx, ScrollCtx } from './Step';
 import { useSpring, config } from 'react-spring';
-import { Step } from './Step';
-import * as COMPONENTS from './DocsyComponents';
 import { createBrowserHistory, Location } from 'history';
 import qs from 'query-string';
+import { NavContex } from './NavContext';
 
-export type SlideItem =
-  | {
-      type: 'slide';
-      url: string;
-      path: Array<string>;
-      slug: string;
-      content: Document;
-      steps: number;
-    }
-  | {
-      type: 'error';
-      url: string;
-      path: Array<string>;
-      slug: string;
-      error: JSX.Element;
-      steps: number;
-    };
+export type SlideItem = {
+  url: string;
+  path: Array<string>;
+  slug: string;
+  content: JSX.Element;
+  steps: number;
+};
 
 interface Props {
   slides: Array<SlideItem>;
   header: string;
 }
-
-const RESOLVE_VALUES: ResolveValues = {
-  createElement: React.createElement,
-  Step: Step,
-  ...COMPONENTS
-};
 
 const history = createBrowserHistory();
 
@@ -224,76 +206,68 @@ export const Slides: React.FC<Props> = ({ slides, header }) => {
 
   const currentSlide = slides[slide];
 
-  const content = React.useMemo(() => {
-    if (!currentSlide) {
-      return null;
-    }
-    if (currentSlide.type === 'error') {
-      return currentSlide.error;
-    }
-    try {
-      const items = resolve(currentSlide.content, RESOLVE_VALUES);
-      return React.createElement(React.Fragment, null, ...items);
-    } catch (error) {
-      console.error(error);
-      return <div>Error: {String(error)}</div>;
-    }
-  }, [currentSlide]);
+  const navContext = React.useMemo((): NavContex => {
+    return {
+      push: history.push
+    };
+  }, []);
 
   return (
     <div className="main">
       <StepCtx.Provider value={step}>
         <ScrollCtx.Provider value={setY}>
-          <nav ref={navRef as any}>
-            <div>
-              {menu ? (
-                <span
-                  className="back"
-                  onClick={() => {
-                    setMenu(false);
-                  }}
-                >
-                  {'<- back'}
-                </span>
-              ) : (
-                <p
-                  className="btn"
-                  onClick={() => setMenu(true)}
-                >{`// ${currentSlide.slug.slice(1)}.dy`}</p>
-              )}
-              <span className="infos">{header}</span>
-            </div>
-          </nav>
-          <div className="page">
-            {menu ? (
+          <NavContex.Provider value={navContext}>
+            <nav ref={navRef as any}>
               <div>
-                {slides.map((slide, i) => (
-                  <React.Fragment key={i}>
-                    <span
-                      className="btn menu-btn"
-                      onClick={() => {
-                        setCurrent(() => [i, 0]);
-                        setMenu(false);
-                      }}
-                    >
-                      {`// ${slide.path.join('/')}.dy`}
-                    </span>
-                    <br />
-                  </React.Fragment>
-                ))}
+                {menu ? (
+                  <span
+                    className="back"
+                    onClick={() => {
+                      setMenu(false);
+                    }}
+                  >
+                    {'<- back'}
+                  </span>
+                ) : (
+                  <p
+                    className="btn"
+                    onClick={() => setMenu(true)}
+                  >{`// ${currentSlide.slug.slice(1)}.dy`}</p>
+                )}
+                <span className="infos">{header}</span>
               </div>
-            ) : (
-              <div>
-                <div style={{ position: 'relative' }}>
-                  {content}
-                  {/* {transitions.map(({ item, props, key }) => {
+            </nav>
+            <div className="page">
+              {menu ? (
+                <div>
+                  {slides.map((slide, i) => (
+                    <React.Fragment key={i}>
+                      <span
+                        className="btn menu-btn"
+                        onClick={() => {
+                          setCurrent(() => [i, 0]);
+                          setMenu(false);
+                        }}
+                      >
+                        {`// ${slide.slug.slice(1)}.dy`}
+                      </span>
+                      <br />
+                    </React.Fragment>
+                  ))}
+                </div>
+              ) : (
+                <div>
+                  <div key={currentSlide.slug} style={{ position: 'relative' }}>
+                    {currentSlide.content}
+                    {/* {transitions.map(({ item, props, key }) => {
                       const Page = PAGES[item];
                       return <Page key={key} style={props} />;
                     })} */}
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          </NavContex.Provider>
         </ScrollCtx.Provider>
       </StepCtx.Provider>
     </div>

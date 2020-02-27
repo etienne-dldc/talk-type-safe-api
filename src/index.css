@@ -77,12 +77,13 @@ h1 span {
 }
 
 h2 {
-  font-size: 1.5rem;
+  font-size: 1rem;
   color: #fb8c00;
   font-weight: normal;
 }
 
 h2 span {
+  font-size: 1rem;
   font-weight: bold;
   text-decoration: underline;
 }
@@ -138,6 +139,14 @@ ul {
   list-style: none;
   padding: 0;
   margin-top: 1rem;
+}
+
+ul ul {
+  margin-top: 0;
+}
+
+li > ul {
+  padding-left: 2rem;
 }
 
 li .dash {
