@@ -3,13 +3,13 @@ import React from 'react';
 
 export const StepCtx = React.createContext(0);
 
-export const ScrollCtx = React.createContext<(target: number) => void>(
-  () => {}
-);
+export const ScrollCtx = React.createContext<
+  (conf: StepsConfig, elem: HTMLDivElement) => void
+>(() => {});
 
 export const useStep = () => React.useContext(StepCtx);
 
-type StepsConfig =
+export type StepsConfig =
   | number
   | { exact: number }
   | { steps: Array<number> }
@@ -25,26 +25,33 @@ export interface StepProps {
 export const Step: React.FC<StepProps> = ({ step = 0, children, inline }) => {
   const currentStep = useStep();
   const visible = resolveStepsConfig(step, currentStep);
-  const scrollTo = React.useContext(ScrollCtx);
+  const registerScroll = React.useContext(ScrollCtx);
   const containerRef = React.useRef<HTMLDivElement>();
-  const lastScrollRef = React.useRef(window.scrollY);
+  // const lastScrollRef = React.useRef(window.scrollY);
 
   React.useEffect(() => {
     if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      if (visible) {
-        const target =
-          window.scrollY +
-          rect.top +
-          rect.height * 0.8 -
-          window.innerHeight * 0.8;
-        lastScrollRef.current = window.scrollY;
-        scrollTo(Math.max(0, target));
-      } else {
-        scrollTo(lastScrollRef.current);
-      }
+      registerScroll(step, containerRef.current);
     }
-  }, [scrollTo, visible]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // React.useEffect(() => {
+  //   if (containerRef.current) {
+  //     const rect = containerRef.current.getBoundingClientRect();
+  //     if (visible) {
+  //       const target =
+  //         window.scrollY +
+  //         rect.top +
+  //         rect.height * 0.8 -
+  //         window.innerHeight * 0.8;
+  //       lastScrollRef.current = window.scrollY;
+  //       scrollTo(Math.max(0, target));
+  //     } else {
+  //       scrollTo(lastScrollRef.current);
+  //     }
+  //   }
+  // }, [scrollTo, visible]);
 
   const Wrapper = inline ? 'span' : 'div';
 
@@ -83,7 +90,7 @@ export function resolveMaxStepsConfig(config: StepsConfig): number {
   return 0;
 }
 
-function resolveStepsConfig(config: StepsConfig, step: number): boolean {
+export function resolveStepsConfig(config: StepsConfig, step: number): boolean {
   if (typeof config === 'number') {
     return step >= config;
   }

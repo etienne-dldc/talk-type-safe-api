@@ -1,5 +1,5 @@
 import React from 'react';
-import { StepCtx, ScrollCtx } from './Step';
+import { StepCtx, ScrollCtx, StepsConfig, resolveStepsConfig } from './Step';
 import { useSpring, config } from 'react-spring';
 import { createBrowserHistory, Location } from 'history';
 import qs from 'query-string';
@@ -9,7 +9,7 @@ export type SlideItem = {
   url: string;
   path: Array<string>;
   slug: string;
-  content: JSX.Element;
+  content: Array<JSX.Element>;
   steps: number;
 };
 
@@ -105,9 +105,41 @@ export const Slides: React.FC<Props> = ({ slides, header }) => {
     });
   }, []);
 
+  const scrollPos = React.useRef(new Map<StepsConfig, HTMLDivElement>());
+  React.useMemo(() => {
+    scrollPos.current = new Map<StepsConfig, HTMLDivElement>();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slide]);
+
+  const registerScroll = React.useCallback(
+    (conf: StepsConfig, elem: HTMLDivElement) => {
+      scrollPos.current.set(conf, elem);
+    },
+    []
+  );
+
+  // React.useEffect(() => {
+  //   setY(0);
+  // }, [slide, setY]);
+
   React.useEffect(() => {
-    setY(0);
-  }, [slide, setY]);
+    setTimeout(() => {
+      let value = 0;
+      scrollPos.current.forEach((elem, config) => {
+        const active = resolveStepsConfig(config, step);
+        if (active) {
+          const rect = elem.getBoundingClientRect();
+          const target =
+            window.scrollY +
+            rect.top +
+            rect.height * 0.8 -
+            window.innerHeight * 0.8;
+          value = Math.max(value, target);
+        }
+      });
+      setY(value);
+    }, 100);
+  }, [step, setY]);
 
   const prevSlide = React.useCallback(() => {
     setCurrent(([slide]) => [Math.max(slide - 1, 0), 0]);
@@ -215,7 +247,7 @@ export const Slides: React.FC<Props> = ({ slides, header }) => {
   return (
     <div className="main">
       <StepCtx.Provider value={step}>
-        <ScrollCtx.Provider value={setY}>
+        <ScrollCtx.Provider value={registerScroll}>
           <NavContex.Provider value={navContext}>
             <nav ref={navRef as any}>
               <div>
@@ -258,7 +290,11 @@ export const Slides: React.FC<Props> = ({ slides, header }) => {
               ) : (
                 <div>
                   <div key={currentSlide.slug} style={{ position: 'relative' }}>
-                    {currentSlide.content}
+                    {React.createElement(
+                      React.Fragment,
+                      null,
+                      ...(currentSlide.content as any)
+                    )}
                     {/* {transitions.map(({ item, props, key }) => {
                       const Page = PAGES[item];
                       return <Page key={key} style={props} />;

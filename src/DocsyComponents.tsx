@@ -1,6 +1,4 @@
 import React from 'react';
-import { CodeHighlight } from './CodeHighlight';
-import { Language } from 'prism-react-renderer';
 import { NavContex } from './NavContext';
 
 export const Title: React.FC = ({ children }) => {
@@ -78,11 +76,4 @@ export const Image: React.FC<{ src: string }> = ({ src }) => {
       <img src={src} />
     </div>
   );
-};
-
-export const Code: React.FC<{
-  code: string;
-  language: Language;
-}> = ({ code, language = 'javascript' }) => {
-  return <CodeHighlight code={code} language={language} />;
 };

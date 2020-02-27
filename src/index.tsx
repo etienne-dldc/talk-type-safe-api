@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import FILES from '../slides/**/*.dy';
@@ -14,6 +15,13 @@ import {
 import { Step, StepProps, resolveMaxStepsConfig } from './Step';
 import { Slides, SlideItem } from './Slides';
 import * as COMPONENTS from './DocsyComponents';
+import { CodeHighlight } from './CodeHighlight';
+
+const SNIPPETS_FILES = {
+  overmind: '/snippets/overmind.ts',
+  chemin_base: '/snippets/chemin_base.ts',
+  chemin_match: '/snippets/chemin_match.ts'
+};
 
 type Folder = { [key: string]: string | Folder };
 
@@ -51,13 +59,11 @@ async function main() {
 
   const SNIPPETS = Object.fromEntries(
     await Promise.all(
-      Object.entries({ overmind: '/snippets/overmind.ts' }).map(
-        async ([key, path]) => {
-          const res = await fetch(path);
-          const content = await res.text();
-          return [key, content];
-        }
-      )
+      Object.entries(SNIPPETS_FILES).map(async ([key, path]) => {
+        const res = await fetch(path);
+        const content = await res.text();
+        return [key, content];
+      })
     )
   );
 
@@ -65,6 +71,7 @@ async function main() {
     createElement: React.createElement,
     Step: Step,
     Snippets: SNIPPETS,
+    Code: CodeHighlight,
     ...COMPONENTS
   };
 
@@ -129,7 +136,7 @@ async function main() {
           url: page.url,
           path: page.path,
           slug: '/' + page.path.join('/'),
-          content: <div>Error: {String(error)}</div>
+          content: [<div key="error">Error: {String(error)}</div>]
         };
       }
     }

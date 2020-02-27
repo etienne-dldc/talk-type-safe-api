@@ -6,10 +6,21 @@ import theme from 'prism-react-renderer/themes/vsDark';
 interface Props {
   language: Language;
   code: string;
+  startAtLine?: number;
 }
 
-export const CodeHighlight: React.FC<Props> = ({ code, language }) => {
-  const codeClean = code.trim();
+export const CodeHighlight: React.FC<Props> = ({
+  code,
+  language,
+  startAtLine
+}) => {
+  let codeClean = code.trim();
+  if (startAtLine !== undefined) {
+    codeClean = codeClean
+      .split('\n')
+      .slice(startAtLine)
+      .join('\n');
+  }
 
   return (
     <Highlight

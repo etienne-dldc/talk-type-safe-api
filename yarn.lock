@@ -1705,6 +1705,11 @@ chardet@^0.7.0:
   resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.7.0.tgz#90094849f0937f2eedc2425d0d28a9e5f0cbad9e"
   integrity sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==
 
+chemin@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/chemin/-/chemin-5.0.0.tgz#0048dde3de7d646b6ed10c449a3b6f136e125bb4"
+  integrity sha512-LgnFv6UYyB/GHVIZ3ez+gYNYwkcUKeXYmCV/QZhEX59Jx5uIuDsbVaPYB/eGiPsKewIE8uDzLMIdDGPDaydpew==
+
 chokidar@^2.1.5:
   version "2.1.8"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-2.1.8.tgz#804b3a7b6a99358c3c5c61e71d8728f041cff917"
