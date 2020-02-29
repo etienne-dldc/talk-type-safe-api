@@ -1,0 +1,47 @@
+<|Title>Chemin|>
+
+<|Image src='/images/chemin.png'|>
+
+<|Link to='https://github.com/etienne-dldc/chemin'>Github Repo|>
+
+<|Step>
+  <|Code code=Snippets.chemin_01_base |>
+|>
+
+<|Step>
+  <|Code code=Snippets.chemin_02_match |>
+|>
+
+<|Step>
+  <|SubTitle>Strongly typed API|>
+  <|Code code=Snippets.chemin_03_typed |>
+|>
+
+<|Step>
+  <|Code code=Snippets.chemin_04_how1 |>
+|>
+
+<|Step>
+  <|Code code=Snippets.chemin_05_how2 |>
+|>
+
+<|Step>
+  <|Code code=Snippets.chemin_06_how3 |>
+|>
+
+<|Step>
+  <|Code code=Snippets.chemin_07_how4 |>
+|>
+
+<|Step>
+  <|Code code=Snippets.chemin_08_how5 |>
+|>
+
+<|Step>
+  <|Code code=Snippets.chemin_09_how6 |>
+|>
+
+<|Step>
+  <|SubTitle>Composition|>
+  <|Code code=Snippets.chemin_10_compose |>
+|>

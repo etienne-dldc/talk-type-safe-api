@@ -20,6 +20,7 @@ module.exports = {
     'react/prop-types': 0,
     '@typescript-eslint/no-empty-function': 0,
     'react/display-name': 0,
-    '@typescript-eslint/ban-ts-ignore': 0
+    '@typescript-eslint/ban-ts-ignore': 0,
+    '@typescript-eslint/no-unused-vars': 0
   }
 };

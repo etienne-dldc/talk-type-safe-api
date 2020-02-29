@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import FILES from '../slides/**/*.dy';
 import './index.css';
 import {
   parse,
@@ -13,15 +12,34 @@ import {
   ResolveValues
 } from 'docsy';
 import { Step, StepProps, resolveMaxStepsConfig } from './Step';
+import { CodeHighlight } from './CodeHighlight';
 import { Slides, SlideItem } from './Slides';
 import * as COMPONENTS from './DocsyComponents';
-import { CodeHighlight } from './CodeHighlight';
+import FILES from '../slides/**/*.dy';
 
-const SNIPPETS_FILES = {
-  overmind: '/snippets/overmind.ts',
-  chemin_base: '/snippets/chemin_base.ts',
-  chemin_match: '/snippets/chemin_match.ts'
-};
+const SNIPPETS_FILES = [
+  'chemin/01_base',
+  'chemin/02_match',
+  'chemin/03_typed',
+  'chemin/04_how1',
+  'chemin/05_how2',
+  'chemin/06_how3',
+  'chemin/07_how4',
+  'chemin/08_how5',
+  'chemin/09_how6',
+  'chemin/10_compose',
+  'tumau/01_demo',
+  'tumau/02_koa',
+  'tumau/03_middleware',
+  'tumau/04_compose',
+  'tumau/05_json',
+  'tumau/06_tumau_ctx',
+  'tumau/07_tumau_json',
+  'tumau/08_read_json'
+].reduce<{ [key: string]: string }>((acc, file) => {
+  acc[file.replace('/', '_')] = `/snippets/${file}.ts`;
+  return acc;
+}, {});
 
 type Folder = { [key: string]: string | Folder };
 
@@ -97,10 +115,7 @@ async function main() {
         let stepCount = 0;
         traverse(parsed, node => {
           if (NodeIs.Element(node)) {
-            if (
-              NodeIs.Identifier(node.component) &&
-              node.component.name === 'Step'
-            ) {
+            if (NodeIs.Identifier(node.component) && node.component.name === 'Step') {
               stepCount += 1;
               const props: StepProps = resolve(node.props, {
                 createElement: () => {}
@@ -114,11 +129,7 @@ async function main() {
                   })
                 );
               }
-              maxStep = Math.max(
-                maxStep,
-                resolveMaxStepsConfig(step),
-                stepCount
-              );
+              maxStep = Math.max(maxStep, resolveMaxStepsConfig(step), stepCount);
             }
           }
         });

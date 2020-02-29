@@ -4,10 +4,7 @@ import { NavContex } from './NavContext';
 export const Title: React.FC = ({ children }) => {
   return (
     <h1>
-      #{' '}
-      <span>
-        {React.createElement(React.Fragment, null, ...(children as any))}
-      </span>
+      # <span>{React.createElement(React.Fragment, null, ...(children as any))}</span>
     </h1>
   );
 };
@@ -27,6 +24,8 @@ export const Link: React.FC<{ to: string }> = ({ to, children }) => (
     )
   </span>
 );
+
+export const P: React.FC = ({ children }) => <p>{children}</p>;
 
 export const PageLink: React.FC<{ to: string }> = ({ to, children }) => {
   const nav = React.useContext(NavContex);

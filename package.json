@@ -24,7 +24,8 @@
     "query-string": "^6.11.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-spring": "^8.0.27"
+    "react-spring": "^8.0.27",
+    "tumau": "^1.0.0-alpha.64"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
