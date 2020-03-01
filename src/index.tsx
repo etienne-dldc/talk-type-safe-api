@@ -18,26 +18,31 @@ import * as COMPONENTS from './DocsyComponents';
 import FILES from '../slides/**/*.dy';
 
 const SNIPPETS_FILES = [
-  'chemin/01_base',
-  'chemin/02_match',
-  'chemin/03_typed',
-  'chemin/04_how1',
-  'chemin/05_how2',
-  'chemin/06_how3',
-  'chemin/07_how4',
-  'chemin/08_how5',
-  'chemin/09_how6',
-  'chemin/10_compose',
-  'tumau/01_demo',
-  'tumau/02_koa',
-  'tumau/03_middleware',
-  'tumau/04_compose',
-  'tumau/05_json',
-  'tumau/06_tumau_ctx',
-  'tumau/07_tumau_json',
-  'tumau/08_read_json'
+  'tumau/01_demo.ts',
+  'tumau/02_koa.js',
+  'tumau/03_context_mutable.ts',
+  'tumau/04_context_custom.ts',
+  'tumau/05_transform.ts',
+  'tumau/06_compose.ts',
+  'tumau/07_compose_many.ts',
+  'tumau/08_tumau_context.ts'
+  // 'chemin/01_base.ts',
+  // 'chemin/02_match.ts',
+  // 'chemin/03_typed.ts',
+  // 'chemin/04_how1.ts',
+  // 'chemin/05_how2.ts',
+  // 'chemin/06_how3.ts',
+  // 'chemin/07_how4.ts',
+  // 'chemin/08_how5.ts',
+  // 'chemin/09_how6.ts',
+  // 'chemin/10_compose.ts'
 ].reduce<{ [key: string]: string }>((acc, file) => {
-  acc[file.replace('/', '_')] = `/snippets/${file}.ts`;
+  acc[
+    file
+      .replace('/', '_')
+      .replace('.ts', '')
+      .replace('.js', '')
+  ] = `/snippets/${file}`;
   return acc;
 }, {});
 

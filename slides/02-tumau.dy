@@ -13,38 +13,81 @@
 |>
 
 <|Step>
+  <|P>One of the design goal of Tumau's API is to require you to write as little types as possible. In fact, the above code has no types but is fully typed !|>
+|>
+
+<|Step>
+  <|P>Of course this example is really simple, how does tumau deels with more complex examples ?|>
+|>
+
+<|Step>
   <|SubTitle>Koa|>
+  <|P>Let's start by looking at another NodeJS HTTP framework like Koa|>
   <|Code code=Snippets.tumau_02_koa |>
 |>
 
 <|Step>
-  <|SubTitle>Context type|>
-  <|Code code=Snippets.tumau_03_middleware |>
+  <|P>Koa uses a "context" to share logic between different parts of the code. So let's explore how we could type a Context object.|>
 |>
 
 <|Step>
-  <|Code code=Snippets.tumau_04_compose |>
+  <|SubTitle>Typed Mutable Context|>
+  <|P>We could try to type the context as a mutable object with default or optional values|>
+  <|Code code=Snippets.tumau_03_context_mutable |>
 |>
 
 <|Step>
-  <|Code code=Snippets.tumau_05_json |>
+  <|P>But then we need to define a context ourself because other middleware could ehance the context:|>
+  <|Code code=Snippets.tumau_04_context_custom |>
+|>
+
+<|Step>
+  <|P>This is not very practical and it still expose us to two major problems:|>
+  <|List>
+    <|Li>What if two libs uses the same property ?|>
+    <|Li>What if the context is defined be never set ?|>
+  |>
+|>
+
+<|Step>
+  <|SubTitle>Composing Immutable Context|>
+  <|P>Another solution is to never mutate a context but instead to "transform" it with our middleware:|>
+|>
+
+<|Step>
+  <|Code code=Snippets.tumau_05_transform |>
+|>
+
+<|Step>
+  <|Code code=Snippets.tumau_06_compose |>
+|>
+
+<|Step>
+  <|P>This might looks like a good idea but it has a very big problem:
+  you either have to pass you middleware inline to <|InlineCode>compose|>
+  or to define precisly the type of the context your middleware will receive:|>
+|>
+
+<|Step>
+  <|Code code=Snippets.tumau_07_compose_many |>
+|>
+
+<|Step>
+  <|P>But just like before this require quite a lot of typings and does not scale very well.|>
 |>
 
 <|Step>
   <|SubTitle>Tumau Context|>
+  <|P>To solve this Tumau does not let you read or write directly on an object but instead requires you to use an interface:|>
 |>
 
 <|Step>
-  <|Code code=Snippets.tumau_06_tumau_ctx |>
+  <|Code code=Snippets.tumau_08_tumau_context |>
 |>
 
 <|Step>
-  <|Code code=Snippets.tumau_07_tumau_json |>
+  <|P>As you can see we call <|InlineCode>ctx.readContext()|>
+  with an argument <|InlineCode>RequestConsumer|>.
+  If you try this code you will see that the
+  <|InlineCode>request|> is typed. But how does Tumau knows this ?|>
 |>
-
-<|Step>
-  <|Code code=Snippets.tumau_08_read_json |>
-|>
-
-
-

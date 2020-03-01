@@ -76,3 +76,7 @@ export const Image: React.FC<{ src: string }> = ({ src }) => {
     </div>
   );
 };
+
+export const InlineCode: React.FC = ({ children }) => {
+  return <code>{children}</code>;
+};
