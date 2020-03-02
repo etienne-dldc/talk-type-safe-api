@@ -41,7 +41,7 @@
 |>
 
 <|Step>
-  <|P>But the code above only worl for one argument,
+  <|P>But the code above only works for one argument,
   so we need to create function overload to allow more arguments|>
   <|Code code=Snippets.chemin_07_how4 |>
 |>

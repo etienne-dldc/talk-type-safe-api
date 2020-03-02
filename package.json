@@ -9,7 +9,7 @@
     "setup": "cp ./config/slides.settings.json ./.vscode/settings.json",
     "unsetup": "cp ./config/base.settings.json ./.vscode/settings.json",
     "format": "prettier --write '{slides,static}/**/*'",
-    "start": "parcel serve ./src/index.html",
+    "start": "parcel serve ./src/index.html --port 9030",
     "build": "parcel build ./src/index.html",
     "lint": "eslint '*/**/*.{js,ts,tsx}'",
     "typecheck": "tsc --noEmit"

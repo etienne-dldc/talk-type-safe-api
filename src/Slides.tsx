@@ -20,10 +20,7 @@ interface Props {
 
 const history = createBrowserHistory();
 
-function stateFromLocation(
-  location: Location,
-  slides: Array<SlideItem>
-): [number, number] {
+function stateFromLocation(location: Location, slides: Array<SlideItem>): [number, number] {
   const { pathname, search } = location;
   const parsed = qs.parse(search, { parseNumbers: true });
   const step = typeof parsed.step === 'number' ? parsed.step : 0;
@@ -47,10 +44,10 @@ export const Slides: React.FC<Props> = ({ slides, header }) => {
     });
   }, []);
 
-  const [slide, step] = React.useMemo(
-    () => stateFromLocation(location, slides),
-    [location, slides]
-  );
+  const [slide, step] = React.useMemo(() => stateFromLocation(location, slides), [
+    location,
+    slides
+  ]);
 
   const LAST_SLIDE = slides.length - 1;
 
@@ -77,9 +74,7 @@ export const Slides: React.FC<Props> = ({ slides, header }) => {
 
   const setCurrent = React.useCallback(
     (exec: (prev: [number, number]) => [number, number]) => {
-      const [slideIndex, step] = exec(
-        stateFromLocation(locationRef.current, slides)
-      );
+      const [slideIndex, step] = exec(stateFromLocation(locationRef.current, slides));
       const slide = slides[slideIndex];
       history.push(`${slide.slug}?step=${step}`);
     },
@@ -111,12 +106,9 @@ export const Slides: React.FC<Props> = ({ slides, header }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slide]);
 
-  const registerScroll = React.useCallback(
-    (conf: StepsConfig, elem: HTMLDivElement) => {
-      scrollPos.current.set(conf, elem);
-    },
-    []
-  );
+  const registerScroll = React.useCallback((conf: StepsConfig, elem: HTMLDivElement) => {
+    scrollPos.current.set(conf, elem);
+  }, []);
 
   // React.useEffect(() => {
   //   setY(0);
@@ -129,11 +121,7 @@ export const Slides: React.FC<Props> = ({ slides, header }) => {
         const active = resolveStepsConfig(config, step);
         if (active) {
           const rect = elem.getBoundingClientRect();
-          const target =
-            window.scrollY +
-            rect.top +
-            rect.height * 0.8 -
-            window.innerHeight * 0.8;
+          const target = window.scrollY + rect.top + rect.height * 0.8 - window.innerHeight * 0.8;
           value = Math.max(value, target);
         }
       });
@@ -261,10 +249,9 @@ export const Slides: React.FC<Props> = ({ slides, header }) => {
                     {'<- back'}
                   </span>
                 ) : (
-                  <p
-                    className="btn"
-                    onClick={() => setMenu(true)}
-                  >{`// ${currentSlide.slug.slice(1)}.dy`}</p>
+                  <p className="btn" onClick={() => setMenu(true)}>{`// ${currentSlide.slug.slice(
+                    1
+                  )}.dy`}</p>
                 )}
                 <span className="infos">{header}</span>
               </div>
@@ -290,11 +277,7 @@ export const Slides: React.FC<Props> = ({ slides, header }) => {
               ) : (
                 <div>
                   <div key={currentSlide.slug} style={{ position: 'relative' }}>
-                    {React.createElement(
-                      React.Fragment,
-                      null,
-                      ...(currentSlide.content as any)
-                    )}
+                    {React.createElement(React.Fragment, null, ...(currentSlide.content as any))}
                     {/* {transitions.map(({ item, props, key }) => {
                       const Page = PAGES[item];
                       return <Page key={key} style={props} />;

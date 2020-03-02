@@ -1,11 +1,14 @@
 import {
   TumauServer,
   TumauResponse,
-  RequestConsumer
+  RequestConsumer,
+  Middleware
 } from 'tumau';
 
-const server = TumauServer.create(tools => {
+const middleware: Middleware = tools => {
   const request = tools.readContext(RequestConsumer);
 
   return TumauResponse.withText(`Hello from ${request.url}`);
-});
+};
+
+const server = TumauServer.create(middleware);

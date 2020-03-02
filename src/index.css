@@ -39,7 +39,7 @@ nav.scroll {
 nav > div {
   height: 100%;
   margin: 0 auto;
-  max-width: 38rem;
+  max-width: 45rem;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -166,7 +166,7 @@ li .dash {
 }
 
 .main {
-  min-height: 500vh;
+  min-height: 1000vh;
 }
 
 pre.code-highlight {
