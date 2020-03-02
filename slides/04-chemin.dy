@@ -1,0 +1,63 @@
+<|Title>Chemin|>
+
+<|Image src='/images/chemin.png'|>
+
+<|P center noMargin>
+  <|Link to='https://github.com/etienne-dldc/chemin'>Chemin on Github|>
+|>
+
+<|Step>
+  <|Code code=Snippets.chemin_01_base |>
+|>
+
+<|Step>
+  <|Code code=Snippets.chemin_02_match |>
+|>
+
+<|Step>
+  <|SubTitle>Strongly typed API|>
+  <|Code code=Snippets.chemin_03_typed |>
+|>
+
+<|Step>
+  <|SubTitle>How does it work ?|>
+|>
+
+<|Step>
+  <|P>The <|InlineCode>CheminParam|> type take two type parameter,
+  one of them must extends the <|InlineCode>string|> type and will
+  represent the name of the property|>
+  <|Code code=Snippets.chemin_04_how1 |>
+|>
+
+<|Step>
+  <|P>Then the <|InlineCode>Params|> type will convert this into a object type:|>
+  <|Code code=Snippets.chemin_05_how2 |>
+|>
+
+<|Step>
+  <|P>When you create a chemin, the <|InlineCode>match|> method is typed !|>
+  <|Code code=Snippets.chemin_06_how3 |>
+|>
+
+<|Step>
+  <|P>But the code above only worl for one argument,
+  so we need to create function overload to allow more arguments|>
+  <|Code code=Snippets.chemin_07_how4 |>
+|>
+
+<|Step>
+  <|P>I'm lazy so I just wrote a small script that generate it for me. I keep the script as a comment above the function in case I need to change it.|>
+  <|Code code=Snippets.chemin_08_how5 |>
+|>
+
+<|Step>
+  <|P>Here is the result|>
+  <|Code code=Snippets.chemin_09_how6 |>
+|>
+
+<|Step>
+  <|SubTitle>Composition|>
+  <|P>The function allow up to 9 arguments, if you need more you can compose <|InlineCode>Chemin|>s together !|>
+  <|Code code=Snippets.chemin_10_compose |>
+|>

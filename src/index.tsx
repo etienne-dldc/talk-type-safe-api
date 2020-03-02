@@ -25,17 +25,22 @@ const SNIPPETS_FILES = [
   'tumau/05_transform.ts',
   'tumau/06_compose.ts',
   'tumau/07_compose_many.ts',
-  'tumau/08_tumau_context.ts'
-  // 'chemin/01_base.ts',
-  // 'chemin/02_match.ts',
-  // 'chemin/03_typed.ts',
-  // 'chemin/04_how1.ts',
-  // 'chemin/05_how2.ts',
-  // 'chemin/06_how3.ts',
-  // 'chemin/07_how4.ts',
-  // 'chemin/08_how5.ts',
-  // 'chemin/09_how6.ts',
-  // 'chemin/10_compose.ts'
+  'tumau/08_tumau_context.ts',
+  'tumau/09_expose_tumau_context.ts',
+  'tumau/10_use_tumau_context.ts',
+  'routing/01_string.ts',
+  'routing/02_pattern.ts',
+  'routing/03_type.ts',
+  'chemin/01_base.ts',
+  'chemin/02_match.ts',
+  'chemin/03_typed.ts',
+  'chemin/04_how1.ts',
+  'chemin/05_how2.ts',
+  'chemin/06_how3.ts',
+  'chemin/07_how4.ts',
+  'chemin/08_how5.ts',
+  'chemin/09_how6.ts',
+  'chemin/10_compose.ts'
 ].reduce<{ [key: string]: string }>((acc, file) => {
   acc[
     file

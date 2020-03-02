@@ -1,0 +1,21 @@
+<|Title>Type safe Routing ?|>
+
+<|Step>
+  <|P>Route don't need types right ?|>
+  <|Code code=Snippets.routing_01_string |>
+|>
+
+<|Step>
+  <|P>What about that ?|>
+  <|Code code=Snippets.routing_02_pattern |>
+|>
+
+<|Step>
+  <|P>We could manually provide types but that make it worst because now we have a false sense of safety...|>
+  <|Code code=Snippets.routing_03_type |>
+|>
+
+<|Step>
+  <|P>Did you notice the uppercase D in <|InlineCode>userID|> that make the above code failing ?|>
+|>
+

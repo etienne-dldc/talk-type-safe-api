@@ -2,18 +2,19 @@
 
 <|Image src='/images/tumau.png'|>
 
-<|Link to='https://github.com/etienne-dldc/tumau'>Github Repo|>
-
-<|Step>
-  <|P>Tumau is a NodeJS framework for building HTTP server written in TypeScript.|>
+<|P center noMargin>
+  <|Link to='https://github.com/etienne-dldc/tumau'>Tumau on Github|>
 |>
 
 <|Step>
+  <|P>Tumau is a NodeJS framework for building HTTP server written in TypeScript.|>
   <|Code code=Snippets.tumau_01_demo |>
 |>
 
 <|Step>
-  <|P>One of the design goal of Tumau's API is to require you to write as little types as possible. In fact, the above code has no types but is fully typed !|>
+  <|P>One of the design goal of Tumau's API is to require you to write
+  as little types as possible while keeping your app stringly typed.
+  In fact, the above code has no types but is 100% typed !|>
 |>
 
 <|Step>
@@ -37,15 +38,16 @@
 |>
 
 <|Step>
-  <|P>But then we need to define a context ourself because other middleware could ehance the context:|>
+  <|P>If we want to use library or just organize our code we could do something like this:|>
   <|Code code=Snippets.tumau_04_context_custom |>
 |>
 
 <|Step>
-  <|P>This is not very practical and it still expose us to two major problems:|>
+  <|P>But this is not very practical and it expose us to the following problems:|>
   <|List>
-    <|Li>What if two libs uses the same property ?|>
-    <|Li>What if the context is defined be never set ?|>
+    <|Li>We have only one global context type that can get quite complex and hard to use|>
+    <|Li>What if two parts of the code accidentally use the same context key ?|>
+    <|Li>What if the context is read before it is defined ?|>
   |>
 |>
 
@@ -64,7 +66,7 @@
 
 <|Step>
   <|P>This might looks like a good idea but it has a very big problem:
-  you either have to pass you middleware inline to <|InlineCode>compose|>
+  you either have to pass your middleware inline to <|InlineCode>compose|>
   or to define precisly the type of the context your middleware will receive:|>
 |>
 
@@ -73,12 +75,12 @@
 |>
 
 <|Step>
-  <|P>But just like before this require quite a lot of typings and does not scale very well.|>
+  <|P>Because of this, you end up writtin quite a lot of types and it does not scale very well.|>
 |>
 
 <|Step>
-  <|SubTitle>Tumau Context|>
-  <|P>To solve this Tumau does not let you read or write directly on an object but instead requires you to use an interface:|>
+  <|SubTitle>Tumau Tools object|>
+  <|P>To solve this Tumau does not let you read or write directly on an object but instead requires you to use methods on a tools object:|>
 |>
 
 <|Step>
@@ -86,8 +88,33 @@
 |>
 
 <|Step>
-  <|P>As you can see we call <|InlineCode>ctx.readContext()|>
+  <|P>As you can see we call <|InlineCode>tools.readContext()|>
   with an argument <|InlineCode>RequestConsumer|>.
   If you try this code you will see that the
   <|InlineCode>request|> is typed. But how does Tumau knows this ?|>
 |>
+
+<|Step>
+  <|P>Let's see how you can expose a value to Tumau's context|>
+  <|Code code=Snippets.tumau_09_expose_tumau_context |>
+|>
+
+<|Step>
+  <|P>This API is inspired by <|Link to='https://reactjs.org/docs/context.html'>React's Context API|>.
+  It let you create a context with a type. You can then expose (<|InlineCode>Provider|>)
+  or read (<|InlineCode>Consumer|>) the value of the context:|>
+|>
+
+<|Step>
+  <|P>Since you have to pass the <|InlineCode>Consumer|> to retreive the value, Tumau knows the type of the data.|>
+|>
+
+<|Step>
+  <|Code code=Snippets.tumau_10_use_tumau_context |>
+  <|P>Here we use the <|InlineCode>readContextOrFail()|> method to fail early if for some reason the NumContext didn't expose a value.|>
+|>
+
+<|Step>
+  <|P>This context system live as separate package named <|Link to='https://github.com/etienne-dldc/miid'>Miid|> !|>
+|>
+

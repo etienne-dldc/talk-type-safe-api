@@ -1,7 +1,9 @@
 export {};
 // @hide-before
-type Context = {
+type Middleware<Ctx> = (ctx: Ctx) => any;
+
+type AppContext = {
   body: any;
 };
 
-type Middleware = (ctx: Context) => any;
+type AppMiddleware = Middleware<AppContext>;

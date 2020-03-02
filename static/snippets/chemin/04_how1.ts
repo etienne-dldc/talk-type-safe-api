@@ -3,7 +3,7 @@ export type CheminParam<N extends string, T> = {
   value: T;
 };
 
-function string<N extends string>(
+function stringParam<N extends string>(
   name: N
 ): CheminParam<N, string> {
   // ...

@@ -15,17 +15,31 @@ export const SubTitle: React.FC = ({ children }) => (
   </h2>
 );
 
-export const Link: React.FC<{ to: string }> = ({ to, children }) => (
-  <span style={{ color: '#CFD8DC' }}>
-    [<span style={{ color: '#1A237E' }}>{children}</span>](
-    <a style={{ color: '#1A237E' }} href={to}>
-      {to}
-    </a>
-    )
-  </span>
+// export const Link: React.FC<{ to: string }> = ({ to, children }) => (
+//   <span style={{ color: '#CFD8DC' }}>
+//     [<span style={{ color: '#1A237E' }}>{children}</span>](
+//     <a style={{ color: '#1A237E' }} href={to}>
+//       {to}
+//     </a>
+//     )
+//   </span>
+// );
+
+export const Link: React.FC<{ to: string }> = ({ to, children = to }) => (
+  <a style={{ color: '#1A237E' }} href={to}>
+    {children}
+  </a>
 );
 
-export const P: React.FC = ({ children }) => <p>{children}</p>;
+export const P: React.FC<{ center?: boolean; noMargin?: boolean }> = ({
+  children,
+  center = false,
+  noMargin = false
+}) => (
+  <p style={{ textAlign: center ? 'center' : 'left', marginTop: noMargin ? '0' : '1rem' }}>
+    {children}
+  </p>
+);
 
 export const PageLink: React.FC<{ to: string }> = ({ to, children }) => {
   const nav = React.useContext(NavContex);

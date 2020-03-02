@@ -1,12 +1,10 @@
-type TumauBaseContext = {};
-type BodyParserContext = { body: any };
+type BaseContext = {};
+type BodyContext = { body: any };
 type Middleware<Ctx> = (ctx: Ctx) => any;
 type CorsContext = {};
 
 export {};
 // @hide-before
-type MyAppContext = TumauBaseContext &
-  BodyParserContext &
-  CorsContext;
+type AppContext = BaseContext & BodyContext & CorsContext;
 
-type MyAppMiddleware = Middleware<MyAppContext>;
+type AppMiddleware = Middleware<AppContext>;
